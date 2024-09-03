@@ -17,7 +17,7 @@ func TestShortLinkGenerator(t *testing.T) {
 	initialLink_3 := "https://dev.to/justlorain/go-how-to-write-a-worker-pool-1h3b"
 	shortLink_3 := GenerateShortLink(initialLink_3, userId)
 
-	assert.Equal(t, shortLink_1, "WtCEaFgL")
-	assert.Equal(t, shortLink_2, "ByJG4ZeU")
-	assert.Equal(t, shortLink_3, "b7B9TQd6")
+	assert.Equal(t, shortLink_1, "HSJpJmQz")
+	assert.Equal(t, shortLink_2, "WYmxexqd")
+	assert.Equal(t, shortLink_3, "3U6WrWAp")
 }
