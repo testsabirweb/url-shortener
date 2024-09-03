@@ -24,6 +24,10 @@ func main() {
 		handler.HandleShortUrlRedirect(c)
 	})
 
+	r.GET("/top-domains", func(c *gin.Context) {
+		handler.HandleTopDomains(c)
+	})
+
 	// Note store initialization happens here
 	store.InitializeStore()
 

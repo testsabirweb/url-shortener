@@ -37,6 +37,14 @@ func CreateShortUrl(c *gin.Context) {
 	}
 }
 
+func HandleTopDomains(c *gin.Context) {
+	topDomains := store.GetTopDomains()
+	c.JSON(200, gin.H{
+		"message": "Top 3 Domains are",
+		"doamins": topDomains,
+	})
+
+}
 func HandleShortUrlRedirect(c *gin.Context) {
 	shortUrl := c.Param("shortUrl")
 	initialUrl, _ := store.RetrieveInitialUrl(shortUrl)
