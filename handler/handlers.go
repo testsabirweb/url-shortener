@@ -18,20 +18,27 @@ func CreateShortUrl(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	host := "http://localhost:3000/"
 
 	shortUrl := shortener.GenerateShortLink(creationRequest.LongUrl)
-	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
+	initialUrl, _ := store.RetrieveInitialUrl(shortUrl)
+	if initialUrl == creationRequest.LongUrl {
+		c.JSON(200, gin.H{
+			"message":   "short url already present",
+			"short_url": host + shortUrl,
+		})
+	} else {
+		store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
 
-	host := "http://localhost:3000/"
-	c.JSON(200, gin.H{
-		"message":   "short url created successfully",
-		"short_url": host + shortUrl,
-	})
-
+		c.JSON(200, gin.H{
+			"message":   "short url created successfully",
+			"short_url": host + shortUrl,
+		})
+	}
 }
 
 func HandleShortUrlRedirect(c *gin.Context) {
 	shortUrl := c.Param("shortUrl")
-	initialUrl := store.RetrieveInitialUrl(shortUrl)
+	initialUrl, _ := store.RetrieveInitialUrl(shortUrl)
 	c.Redirect(302, initialUrl)
 }

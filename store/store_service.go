@@ -37,7 +37,7 @@ func SaveUrlMapping(shortUrl string, originalUrl string) {
 }
 
 // RetrieveInitialUrl retrieves the original URL associated with the given short URL.
-func RetrieveInitialUrl(shortUrl string) string {
+func RetrieveInitialUrl(shortUrl string) (string, error) {
 	storeService.mutex.Lock()
 	defer storeService.mutex.Unlock()
 
@@ -45,8 +45,8 @@ func RetrieveInitialUrl(shortUrl string) string {
 	originalUrl, exists := storeService.urlMap[shortUrl]
 	if !exists {
 		err := errors.New("short URL not found")
-		panic(fmt.Sprintf("Failed to RetrieveInitialUrl | Error: %v - shortUrl: %s\n", err, shortUrl))
+		return "", err
 	}
 
-	return originalUrl
+	return originalUrl, nil
 }
