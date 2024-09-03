@@ -1,0 +1,20 @@
+# Exclude the vendor directory
+vendor/
+
+# Ignore Go build artifacts
+*.exe
+*.log
+*.out
+*.env
+*.tmp
+
+# Ignore Dockerfile and Dockerignore
+Dockerfile
+.dockerignore
+
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore any local configuration files
+*.local
