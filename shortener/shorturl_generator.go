@@ -3,22 +3,23 @@ package shortener
 import (
 	"crypto/sha256"
 	"fmt"
-	"github.com/itchyny/base58-go"
 	"math/big"
 	"os"
+
+	"github.com/itchyny/base58-go"
 )
 
 // GenerateShortLink takes an initial URL as input and returns an 8-character shortened version of the URL.
-func GenerateShortLink(initialLink string) string {
+func GenerateShortLink(initialLink, userId string) string {
 	// Generate a SHA-256 hash of the input URL
-	urlHashBytes := sha256Of(initialLink)
-	
+	urlHashBytes := sha256Of(initialLink + userId)
+
 	// Convert the hash bytes to a big integer and then to a uint64 number
 	generatedNumber := new(big.Int).SetBytes(urlHashBytes).Uint64()
-	
+
 	// Encode the number using Base58 encoding
 	finalString := base58Encoded([]byte(fmt.Sprintf("%d", generatedNumber)))
-	
+
 	// Return the first 8 characters of the encoded string as the shortened link
 	return finalString[:8]
 }
@@ -27,10 +28,10 @@ func GenerateShortLink(initialLink string) string {
 func sha256Of(input string) []byte {
 	// Create a new SHA-256 hash algorithm instance
 	algorithm := sha256.New()
-	
+
 	// Write the input data to the hash algorithm
 	algorithm.Write([]byte(input))
-	
+
 	// Compute and return the hash as a byte slice
 	return algorithm.Sum(nil)
 }
@@ -39,7 +40,7 @@ func sha256Of(input string) []byte {
 func base58Encoded(bytes []byte) string {
 	// Define the Base58 encoding scheme (Bitcoin variant)
 	encoding := base58.BitcoinEncoding
-	
+
 	// Encode the input bytes using the Base58 scheme
 	encoded, err := encoding.Encode(bytes)
 	if err != nil {
@@ -47,7 +48,7 @@ func base58Encoded(bytes []byte) string {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	
+
 	// Return the encoded string
 	return string(encoded)
 }

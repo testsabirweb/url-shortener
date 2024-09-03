@@ -20,8 +20,9 @@ func TestStoreInit(t *testing.T) {
 func TestInsertionAndRetrieval(t *testing.T) {
 	initialLink := "https://www.infracloud.io/"
 	shortURL := "something"
+	userId := "user1"
 
-	SaveUrlMapping(shortURL, initialLink)
+	SaveUrlMapping(shortURL, initialLink, userId)
 	originalUrl, err := RetrieveInitialUrl(shortURL)
 
 	assert.NoError(t, err, "Error should be nil")
@@ -39,7 +40,7 @@ func TestExtractDomain(t *testing.T) {
 		{"http://example.com", "example.com"},
 		{"ftp://www.ftpserver.com", "ftpserver.com"},
 		{"ftp://ftpserver.com", "ftpserver.com"},
-		{"invalid-url", ""},                // Invalid URL
+		{"invalid-url", ""},                          // Invalid URL
 		{"https://sub.domain.com", "sub.domain.com"}, // Subdomain
 	}
 
@@ -52,15 +53,15 @@ func TestExtractDomain(t *testing.T) {
 func TestGetTopDomains(t *testing.T) {
 	// Reset domainCount for a clean test environment
 	storeService.domainCount = map[string]int{
-		"infracloud.io":  5,
-		"example.com":    10,
-		"test.com":       3,
-		"another.com":    7,
+		"infracloud.io": 5,
+		"example.com":   10,
+		"test.com":      3,
+		"another.com":   7,
 	}
 
 	expectedTopDomains := map[string]int{
-		"example.com":  10,
-		"another.com":  7,
+		"example.com":   10,
+		"another.com":   7,
 		"infracloud.io": 5,
 	}
 

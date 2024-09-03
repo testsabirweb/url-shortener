@@ -30,7 +30,7 @@ func InitializeStore() *StorageService {
 }
 
 // SaveUrlMapping saves the mapping between the original URL and the generated short URL.
-func SaveUrlMapping(shortUrl string, originalUrl string) {
+func SaveUrlMapping(shortUrl, originalUrl, userId string) {
 	storeService.mutex.Lock()
 	defer storeService.mutex.Unlock()
 

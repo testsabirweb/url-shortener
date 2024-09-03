@@ -11,10 +11,11 @@ import (
 
 type UrlCreationRequest struct {
 	LongUrl string `json:"long_url" binding:"required"`
+	UserId  string `json:"user_id" binding:"required"`
 }
 
 // ResolveCollision handles potential collisions by generating a new short URL if needed
-func ResolveCollision(originalUrl, shortUrl string, attempt int) (string, error) {
+func ResolveCollision(originalUrl, shortUrl, userId string, attempt int) (string, error) {
 	if attempt > 5 { // Limit recursion to prevent stack overflow
 		return "", fmt.Errorf("too many collisions, cannot generate unique short URL")
 	}
@@ -29,8 +30,8 @@ func ResolveCollision(originalUrl, shortUrl string, attempt int) (string, error)
 	}
 
 	// Generate a new short URL to avoid collision
-	newShortUrl := shortener.GenerateShortLink(originalUrl + shortUrl + fmt.Sprint(attempt))
-	return ResolveCollision(originalUrl, newShortUrl, attempt+1)
+	newShortUrl := shortener.GenerateShortLink(originalUrl+shortUrl+fmt.Sprint(attempt), userId)
+	return ResolveCollision(originalUrl, newShortUrl, userId, attempt+1)
 }
 
 // CreateShortUrl handles the creation of a new short URL
@@ -42,14 +43,14 @@ func CreateShortUrl(c *gin.Context) {
 	}
 	host := "http://localhost:3000/"
 
-	shortUrl := shortener.GenerateShortLink(creationRequest.LongUrl)
+	shortUrl := shortener.GenerateShortLink(creationRequest.LongUrl, creationRequest.UserId)
 	initialUrl, err := store.RetrieveInitialUrl(shortUrl)
 	if err != nil && err.Error() != "short URL not found" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		return
 	}
 	if err != nil && err.Error() == "short URL not found" {
-		store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
+		store.SaveUrlMapping(shortUrl, creationRequest.LongUrl,creationRequest.UserId)
 		c.JSON(http.StatusOK, gin.H{
 			"message":   "short URL created successfully",
 			"short_url": host + shortUrl,
@@ -66,13 +67,13 @@ func CreateShortUrl(c *gin.Context) {
 	}
 
 	// Handle collision
-	shortUrl, err = ResolveCollision(creationRequest.LongUrl, shortUrl, 1)
+	shortUrl, err = ResolveCollision(creationRequest.LongUrl, shortUrl, creationRequest.UserId, 1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl)
+	store.SaveUrlMapping(shortUrl, creationRequest.LongUrl,creationRequest.UserId)
 	c.JSON(200, gin.H{
 		"message":   "short URL created successfully",
 		"short_url": host + shortUrl,
