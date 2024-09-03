@@ -38,3 +38,10 @@ I have attached infracloud.postman_collection.json file, one can import and test
 ## Dockerhub image
 https://hub.docker.com/repository/docker/sabir9644/url-shortener/general
 
+
+## Some useful docker commands
+```bash
+docker build -t sabir9644/url-shortener:<tag> .
+docker push sabir9644/url-shortener:<tag>
+docker run -d -p 3000:3000 --name url-shortener-container sabir9644/url-shortener:<tag>
+```
