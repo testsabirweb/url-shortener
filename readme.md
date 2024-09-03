@@ -45,3 +45,9 @@ docker build -t sabir9644/url-shortener:<tag> .
 docker push sabir9644/url-shortener:<tag>
 docker run -d -p 3000:3000 --name url-shortener-container sabir9644/url-shortener:<tag>
 ```
+
+# Directly run using docker
+```bash
+docker run -d -p 3000:3000 --name url-shortener-container sabir9644/url-shortener:v3
+```
+v3 is the latest image
