@@ -63,8 +63,7 @@ func RetrieveInitialUrl(shortUrl string) (string, error) {
 	// Retrieve the original URL from the in-memory map
 	originalUrl, exists := storeService.urlMap[shortUrl]
 	if !exists {
-		err := errors.New("short URL not found")
-		return "", err
+		return "", errors.New("short URL not found")
 	}
 
 	return originalUrl, nil
